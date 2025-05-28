@@ -1,0 +1,39 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment folders
+.env/
+.venv/
+env/
+venv/
+.ipynb_checkpoints/
+
+# Python virtualenv
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Jupyter Notebook checkpoint
+*.ipynb_checkpoints/
+
+# Results, logs, models
+results/*.png
+results/*.mp4
+results/*.gif
+results/*.avi
+results/saved_model.pth
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# VSCode settings (optional)
+.vscode/
+
+# PyTorch Lightning or tensorboard logs (if added later)
+lightning_logs/
+runs/

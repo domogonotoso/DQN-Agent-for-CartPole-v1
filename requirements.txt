@@ -1,0 +1,6 @@
+torch>=1.12
+torchvision>=0.13
+gym>=0.26
+matplotlib>=3.5
+imageio>=2.9
+pyyaml>=5.4
