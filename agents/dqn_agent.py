@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from collections import deque
+from collections import deque # Replay buffer to store transitions
 from models.q_network import QNetwork  
 
 

@@ -10,32 +10,37 @@ A simple DQN agent implemented in PyTorch for solving the CartPole-v1 environmen
 ```text
 cartpole-dqn/
 ├── agents/
-│   └── dqn\_agent.py         # DQN agent class with training logic and replay memory
+│   └── dqn_agent.py         # DQN agent class with training logic and replay memory
 ├── models/
-│   └── q\_network.py         # Q-Network definition 
+│   └── q_network.py         # Q-Network definition
 ├── utils/
-│   └── plot.py               # Plotting utility for rewards 
+│   └── plot.py              # Plotting utility for training curves
 ├── config/
-│   └── dqn\_config.yaml      # Hyperparameter configuration file (Dict)
-├── main.py                   # Entry point with argument parser (train/test/render)
-├── test.py                   # Script for evaluating the trained agent 
-├── train.py                  # Training loop separated from main
-├── requirements.txt          # Required Python packages
-├── README.md                 # Project documentation
+│   └── dqn_config.yaml      # Hyperparameter configuration file
+├── videos/                  # Saved CartPole videos from render mode
+│   └── rl-video-episode-0.mp4
 ├── results/
-│   ├── rewards\_plot.png     # Training result plot
-│   └── saved\_model.pth      # Trained model checkpoint 
-└── .gitignore                # Git ignore rules for cache/checkpoint files
+│   ├── rewards_plot.png     # Training result curve
+│   └── saved_model.pth      # Trained model checkpoint
+├── main.py                  # Entry point with train/test/render modes
+├── train.py                 # Training loop script
+├── test.py                  # Evaluation script
+├── requirements.txt         # Required packages
+├── README.md                # Project documentation
+└── .gitignore               # Ignoring __pycache__, videos, results
+
 ```
 
 ## Cartpole, what is it?
+! [videos/rl-video-episode-0.mp4]
 Don't let stick on the cart fall down.
 
 
 ## MDP (Markov Decision process)
+What happened at past doesn't effect on what will happen from now.
 
 ## Bellman equation
-
+Q(s, a) = r + gamma * max_a' Q(s', a')
 
 
 ## Policy diffusion at maze
@@ -48,3 +53,63 @@ Don't let stick on the cart fall down.
 
 
 
+## Revision
+    if episode % 10 == 0:
+        print(f"Episode {episode}, Reward: {episode_reward}, Epsilon: {agent.epsilon:.3f}")  
+
+to  
+
+if episode % 10 == 0:
+    avg_reward = np.mean(reward_history[-10:])
+    print(f"Episode {episode}, Reward: {episode_reward:.1f}, "
+          f"10-episode avg: {avg_reward:.1f}, Epsilon: {agent.epsilon:.3f}")
+
+
+## Tuning hyperparameter
+! [results/First_trial.png]
+gamma: 0.99
+epsilon_start: 1.0
+epsilon_min: 0.01
+epsilon_decay: 0.995
+batch_size: 64
+lr: 0.001
+replay_buffer_size: 10000 
+update_freq: 10
+num_episodes: 500
+target_reward: 475
+seed: 42
+
+
+! [results/Second.png]
+gamma: 0.99
+epsilon_start: 1.0
+epsilon_min: 0.05
+epsilon_decay: 0.998
+batch_size: 64
+lr: 0.001
+replay_buffer_size: 10000
+update_freq: 200
+num_episodes: 500
+target_reward: 475
+seed: 42
+
+
+
+
+
+## Debuging test.py
+Episode 1, Reward: 500.0
+Episode 2, Reward: 500.0
+Episode 3, Reward: 500.0
+Episode 4, Reward: 500.0
+Episode 5, Reward: 500.0
+Episode 6, Reward: 500.0
+Episode 7, Reward: 500.0
+Episode 8, Reward: 500.0
+Episode 9, Reward: 500.0
+Episode 10, Reward: 500.0
+
+Too good. I think it has some problem. So I add checking code.
+
+step += 1
+    print(f"Episode {episode}, Reward: {total_reward}, Steps: {step}")
