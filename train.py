@@ -11,7 +11,7 @@ import os
 
 
 def main():
-    # Load config
+    # Load configuration from dqn_config.yaml
     with open("config/dqn_config.yaml", 'r') as f:
         config = yaml.safe_load(f)
 
@@ -26,12 +26,10 @@ def main():
     torch.manual_seed(seed)
     state, _ = env.reset(seed=seed)
 
-    # Agent
     agent = DQNAgent(state_dim, action_dim, config)
 
-    # Training loop
     num_episodes = config["num_episodes"]
-    target_reward = config.get("target_reward", 475) # If we reach to traget_reward before num_episodes, we will save the model.
+    target_reward = config.get("target_reward", 475) # Save model early if average reward reaches target_reward
     save_path = "results/saved_model.pth"
 
     reward_history = []
@@ -45,7 +43,7 @@ def main():
 
             action = agent.select_action(state)
             next_state, reward, terminated, truncated, _ = env.step(action)
-            done = terminated or truncated
+            done = terminated or truncated # Episode ends if it fails (terminated) or reaches time limit (truncated)
             agent.store_transition(state, action, reward, next_state, done)
             agent.update()
             state = next_state

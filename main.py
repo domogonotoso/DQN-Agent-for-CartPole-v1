@@ -17,8 +17,9 @@ def render_agent():
     # Create folder to save videos
     os.makedirs("videos/", exist_ok=True)
 
-    # Set environment for video recording
+    # Set environment 
     env = gym.make("CartPole-v1", render_mode="rgb_array")
+    # Video recording
     env = RecordVideo(env, video_folder="videos/", episode_trigger=lambda x: True)
 
     state_dim = env.observation_space.shape[0]

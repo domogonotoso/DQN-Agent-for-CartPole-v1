@@ -1,5 +1,4 @@
 import random
-import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -11,12 +10,12 @@ class DQNAgent:
     def __init__(self, state_dim, action_dim, config):
         self.state_dim = state_dim
         self.action_dim = action_dim
-        # Dictionary with hyperparameters
-        self.gamma = config["gamma"]                     # Discout factor at bellman equation
-        self.epsilon = config["epsilon_start"]           # Initial exploaration rate
+        # Dictionary with hyperparameters at dqn_config.yaml
+        self.gamma = config["gamma"]                     # Discount factor at bellman equation
+        self.epsilon = config["epsilon_start"]           # Initial exploration rate
         self.epsilon_min = config["epsilon_min"]
         self.epsilon_decay = config["epsilon_decay"]     # Well trained model doesn't need to explore
-        self.batch_size = config["batch_size"]           # For use replay buffer
+        self.batch_size = config["batch_size"]           # For using replay buffer
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         # Q-network
@@ -28,9 +27,9 @@ class DQNAgent:
         self.optimizer = optim.Adam(self.q_network.parameters(), lr=config["lr"]) 
 
         # Replay Buffer
-        self.replay_buffer = deque(maxlen=config["replay_buffer_size"]) #Save 10000 succesive transitions
+        self.replay_buffer = deque(maxlen=config["replay_buffer_size"]) # Replay buffer to store transitions
 
-        # Update timing
+        # Update timing per step
         self.update_freq = config["update_freq"]
         self.learn_step = 0
 
@@ -44,19 +43,19 @@ class DQNAgent:
             state_tensor = torch.FloatTensor(state).unsqueeze(0).to(self.device)  # (1, state_dim)
             with torch.no_grad():
                 q_values = self.q_network(state_tensor)
-            return q_values.argmax().item()  # Exploit, return action with max Q-value
+            return q_values.argmax().item()  # Exploit, return action aligns with max Q-value
 
     def store_transition(self, state, action, reward, next_state, done):
         
-        self.replay_buffer.append((state, action, reward, next_state, done)) # Store at replay buffer
+        self.replay_buffer.append((state, action, reward, next_state, done)) # Store the transition in the replay buffer
 
     def update(self):
         
         if len(self.replay_buffer) < self.batch_size:
-            return  # Not enough samples to train
+            return # Not enough samples to update the network
 
         # Sample a batch of transitions
-        batch = random.sample(self.replay_buffer, self.batch_size) # Pick random batch size transitions from replay buffer
+        batch = random.sample(self.replay_buffer, self.batch_size) # Randomly sample a batch of transitions from the replay buffer
         states, actions, rewards, next_states, dones = zip(*batch) # Unzip the batch
 
         states = torch.FloatTensor(states).to(self.device)                # (batch_size, state_dim)
@@ -70,10 +69,9 @@ class DQNAgent:
 
         # Compute max Q(s', a') from the target network
         with torch.no_grad(): 
-            # From bellman equation, we can get this formula
-            # Q(s, a) = r + gamma * max_a' Q(s', a')
+            # From the Bellman equation: Q(s, a) = r + gamma * max_a' Q(s', a')
             next_q_values = self.target_network(next_states).max(1)[0].unsqueeze(1) 
-            target_q_values = rewards + self.gamma * next_q_values * (1 - dones) # We can see discounted cumulative reward 
+            target_q_values = rewards + self.gamma * next_q_values * (1 - dones)  # discounted cumulative reward (Bellman update)
         # Compute loss
         criterion = nn.MSELoss() # Mean Squared Error Loss
         loss = criterion(q_values, target_q_values)

@@ -12,12 +12,10 @@ def main():
     with open("config/dqn_config.yaml", 'r') as f:
         config = yaml.safe_load(f)
 
-    # Set environment (no render)
     env = gym.make("CartPole-v1")
     state_dim = env.observation_space.shape[0]
     action_dim = env.action_space.n
 
-    # Agent
     agent = DQNAgent(state_dim, action_dim, config)
     agent.load("results/saved_model.pth")
 
@@ -32,8 +30,9 @@ def main():
         step = 0
 
         while not done:
-            action = agent.select_action(state, epsilon=0.0)  # greedy policy
+            action = agent.select_action(state, epsilon=0.0)  # greedy policy (exploit)
             next_state, reward, terminated, truncated, _ = env.step(action)
+            # Episode ends if it fails (terminated) or reaches time limit (truncated)
             done = terminated or truncated
             state = next_state
             total_reward += reward
