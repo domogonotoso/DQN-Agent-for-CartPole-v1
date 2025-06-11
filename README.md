@@ -1,6 +1,6 @@
 # DQN-Agent-forCartpole-v1 implementation
 ```markdown
-A simple DQN agent implemented in PyTorch for solving the CartPole-v1 environment from OpenAI Gym.
+This project implements a simple DQN agent using PyTorch to solve the CartPole-v1 environment from OpenAI Gym.
 ```
 ## 📁 Project Structure
 ```text
@@ -14,11 +14,11 @@ cartpole-dqn/
 ├── config/
 │   └── dqn_config.yaml          # Hyperparameter configuration file
 ├── videos/                  
-│   └── rl-video-episode-0.mp4   # Saved CartPole videos from render mode
+│   └── rl-video-episode-0.mp4   # A saved CartPole video from render mode
 ├── results/
 │   ├── rewards_plot.png         # Training result curve
 │   └── saved_model.pth          # Trained model checkpoint
-├── main.py                     # Entry point with train/test/render modes
+├── main.py                     # main.py provides an easy way to switch between training, testing, and rendering modes
 ├── train.py                    # Training loop script
 ├── test.py                     # Evaluation script
 ├── requirements.txt            # Required packages
@@ -88,15 +88,14 @@ Key features of DQN include:
 
 - **Experience Replay**: A replay buffer is used to store past transitions, allowing for more stable and robust training.
 - **Target Network**: A separate target network is updated less frequently (soft update) to improve stability during training.
-- **Initial Large Negative Rewards**: For example, in environments like CartPole, when the pole falls down, the agent receives a large negative reward. This negative feedback causes significant updates in the Q-values, helping the Q-network to quickly adjust and learn to avoid such outcomes in the future.
+- **Initial Negative Rewards**: In environments like CartPole, when the pole falls down, the episode terminates and the agent receives a reward of 0. This termination signal acts as a strong negative feedback, encouraging the agent to keep the pole balanced for longer.
 
 
 
 
 
-## Revision
 
-### train.py
+## 🔧 Code Improvement (train.py)
 ```python
 if episode % 10 == 0:
         print(f"Episode {episode}, Reward: {episode_reward}, Epsilon: {agent.epsilon:.3f}")
