@@ -1,7 +1,7 @@
 # DQN-Agent-forCartpole-v1 implementation
-```markdown
+
 This project implements a simple DQN agent using PyTorch to solve the CartPole-v1 environment from OpenAI Gym.
-```
+
 ## 📁 Project Structure
 ```text
 cartpole-dqn/
